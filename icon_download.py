@@ -2,9 +2,7 @@ import os
 import sys
 
 import requests
-
 from bs4 import BeautifulSoup
-from clint.textui import progress
 
 
 def download_icon(pack):
@@ -48,7 +46,8 @@ def get_list_apps(name):
         print("an error occurred in getting packageNames error is :\n\t+" + e.__str__())
     print(apk_hashmap)
     for pack in apk_hashmap:
-        download_icon(pack.rstrip())
+        if pack is not None:
+            download_icon(pack.rstrip())
     print("finished")
 
 
