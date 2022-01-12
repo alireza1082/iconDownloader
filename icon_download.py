@@ -54,4 +54,4 @@ def get_list_apps(name):
 
 if __name__ == '__main__':
     # get_list_apps('PyCharm')
-    download_icon("ir.mci.ecareapp")
+    get_list_apps("alireza")
