@@ -6,6 +6,29 @@ from bs4 import BeautifulSoup
 
 
 def download_icon(pack):
+    server_name = "cafe-bazaar"
+    url = "https://cafebazaar.ir/app/" + str(pack)
+    try:
+        resp = requests.get(url.rstrip())
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        if resp.status_code == 404:
+            print(pack.strip() + " is not exists on " + server_name)
+            return
+        tag = soup.find("div", {"class": "CoverHeader__thumbnail"}).findChildren("img")
+        link = tag[0]['src']
+        file = requests.get(link.rstrip(), stream=True, allow_redirects=True)
+        path = f"./repo/{pack}"
+        os.popen(f"mkdir {path}")
+        with open(f'{path}/icon.png', 'wb') as files:
+            files.write(file.content)
+            sys.stdout.flush()
+        print(link)
+    except Exception as ex:
+        print(f"error occurred in downloading in {pack} :" + ex.__str__())
+    print(pack)
+
+
+def download_test(pack):
     serverName = "cafe-bazaar"
     url = "https://cafebazaar.ir/app/" + str(pack)
     try:
@@ -17,8 +40,6 @@ def download_icon(pack):
         tag = soup.find("div", {"class": "CoverHeader__thumbnail"}).findChildren("img")
         link = tag[0]['src']
         file = requests.get(link.rstrip(), stream=True, allow_redirects=True)
-        path = f"./repo/{pack}"
-        os.popen(f"mkdir {path}")
         with open('icon.png', 'wb') as files:
             files.write(file.content)
             sys.stdout.flush()
@@ -34,14 +55,14 @@ def get_list_apps(name):
     apk_hashmap = []
     try:
         for i in range(len(apk_lists)):
-            PackageName = os.popen(
+            package_name = os.popen(
                 "aapt dump badging " + path + apk_lists[
                     i] + " | awk -v FS=\"\'\" \'/package: name=/{print $2}\'").read()
-            newPackageName = str(PackageName).rstrip()
-            if newPackageName in apk_hashmap:
+            new_package_name = str(package_name).rstrip()
+            if new_package_name in apk_hashmap:
                 print("next")
             else:
-                apk_hashmap.append(newPackageName)
+                apk_hashmap.append(new_package_name)
     except Exception as e:
         print("an error occurred in getting packageNames error is :\n\t+" + e.__str__())
     print(apk_hashmap)
@@ -52,5 +73,5 @@ def get_list_apps(name):
 
 
 if __name__ == '__main__':
-    # get_list_apps('PyCharm')
     get_list_apps("alireza")
+    # download_test('org.mozilla.firefox')
