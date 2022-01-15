@@ -17,7 +17,9 @@ def download_icon(pack):
         tag = soup.find("div", {"class": "CoverHeader__thumbnail"}).findChildren("img")
         link = tag[0]['src']
         file = requests.get(link.rstrip(), stream=True, allow_redirects=True)
-        path = f"./repo/{pack}/en-US/"
+        path = f"./repo/{pack}/"
+        os.popen(f"mkdir {path}")
+        path += 'en-US/'
         os.popen(f"mkdir {path}")
         with open(f'{path}icon.png', 'wb') as files:
             files.write(file.content)
